@@ -1,0 +1,17 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy-to-minotaur:
+    runs-on: ubuntu-latest
+    steps:
+      - shell: bash
+        name: Deploy using Xikka Deployment API
+        env:
+          KEY: ${{ secrets.XIKKA_DEPLOY_KEY }}
+        run: |
+          curl -XPOST https://xikka.com/api/deploy/torneo/master -dkey="$KEY"
