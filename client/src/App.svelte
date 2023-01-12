@@ -3,7 +3,6 @@
   import Home from "./Home.svelte";
   import About from "./About.svelte";
   import Number from "./Number.svelte";
-  import Link from "./components/Link.svelte";
 
   let number = 0;
 
@@ -17,9 +16,9 @@
 <h1>Torneo</h1>
 
 <nav>
-  <Link href="/">Home</Link>
-  <Link href="/#/about">About</Link>
-  <Link href="/#/number/{number}" on:click={randomiseNumber}>Number</Link>
+  <a href="/">Home</a>
+  <a href="/#/about">About</a>
+  <a href="/#/number/{number}" on:click={randomiseNumber}>Number</a>
 </nav>
 
 <Router
