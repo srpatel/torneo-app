@@ -5,3 +5,5 @@ __pycache__
 # Local config overrides
 .env.local
 .env.production.local
+
+.python-version
