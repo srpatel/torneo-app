@@ -1,11 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import os
-from dotenv import dotenv_values
 
-config = dotenv_values("../.env" + (".production" if os.getenv("PROD") else ""))
+from config import settings
 
-app = FastAPI(root_path=config.get("FASTAPI_ROOT_PATH", None))
+app = FastAPI(root_path=settings.FASTAPI_ROOT_PATH)
+
 
 origins = [
     "*",
