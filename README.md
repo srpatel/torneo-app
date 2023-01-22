@@ -28,6 +28,21 @@ Docs are automatically generated, and available with two different styles:
 - http://127.0.0.1:8000/redoc - Swagger
 - http://127.0.0.1:8000/docs - ReDoc
 
+### Database
+
+Database migrations are generated and applied using alembic.
+
+Create a migration (should be done alongside any commit which includes a model change):
+
+    python -m alembic revision --autogenerate -m "Description of change..."
+
+Apply the migrations:
+
+    python -m alembic upgrade head
+
+Tables are generated on app startup, to facilitate easier local dev, but migrations are not run automatically.
+I recommend applying migrations every time you pull.
+
 ### Deployment
 
 When deployed, the server needs a frontend to provide ssl certs.

@@ -3,3 +3,4 @@ sqlmodel
 uvicorn[standard]
 gunicorn
 python-dotenv
+alembic
