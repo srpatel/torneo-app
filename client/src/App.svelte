@@ -7,7 +7,7 @@
   let number = 0;
 
   function randomiseNumber() {
-    number = Math.floor(Math.random() * 500);
+    number = Math.floor(Math.random() * 100);
   }
 
   randomiseNumber();

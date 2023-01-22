@@ -1,5 +1,6 @@
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional
 
 from config import settings
 from db import get_session, Session, create_db_and_tables
@@ -27,7 +28,7 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/number/{number}", response_model=Number)
+@app.get("/number/{number}", response_model=Optional[Number])
 def number_details(number: int, session: Session = Depends(get_session)):
     return session.get(NumberDB, number)
 
