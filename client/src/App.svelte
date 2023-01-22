@@ -13,13 +13,20 @@
   randomiseNumber();
 </script>
 
-<h1>Torneo</h1>
-
-<nav>
-  <a href="/">Home</a>
-  <a href="/#/about">About</a>
-  <a href="/#/number/{number}" on:click={randomiseNumber}>Number</a>
-</nav>
+<div class="navbar bg-base-100">
+  <div class="navbar-start">
+    <a href="/" class="btn btn-ghost normal-case text-xl">Torneo</a>
+  </div>
+  <div class="navbar-center">
+    <ul class="menu menu-horizontal px-1">
+      <li><a href="/#/about">About</a></li>
+      <li>
+        <a href="/#/number/{number}" on:click={randomiseNumber}>Number</a>
+      </li>
+    </ul>
+  </div>
+  <div class="navbar-end" />
+</div>
 
 <Router
   routes={{

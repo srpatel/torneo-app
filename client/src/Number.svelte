@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import { push } from "svelte-spa-router";
 
   export let params;
 
@@ -11,6 +12,11 @@
       import.meta.env.VITE_API_BASE_URL + `/number/` + params.number
     );
     responseNumber = await res.json();
+  }
+
+  async function handleRandomiseNumber() {
+    const number = Math.floor(Math.random() * 100);
+    push(`/number/${number}`);
   }
 
   async function handleCreateNumber() {
@@ -27,22 +33,45 @@
   }
 </script>
 
-<p>
-  Number: {params.number}
-</p>
+<div class="flex-1 flex items-center justify-center flex-col">
+  <div class="stats shadow">
+    <div class="stat">
+      <div class="stat-title">Number</div>
+      <div class="stat-value text-primary">{params.number}</div>
+      <div class="stat-desc">What a cool number</div>
+    </div>
 
-{#if responseNumber}
-  <p>
-    Squared: {responseNumber.square}
-  </p>
+    {#if responseNumber}
+      <div class="stat">
+        <div class="stat-title">Squared</div>
+        <div class="stat-value text-primary">{responseNumber.square}</div>
+        <div class="stat-desc">When you multiply a number by itself</div>
+      </div>
 
-  <p>
-    Divisors: {responseNumber.divisors.map((d) => d.divisor).join(", ")}
-  </p>
-{:else}
-  <p>Number not found in database. Would you like to create it?</p>
+      <div class="stat">
+        <div class="stat-title">Divisors</div>
+        <div class="stat-value text-primary">
+          {responseNumber.divisors.map((d) => d.divisor).join(", ")}
+        </div>
+        <div class="stat-desc">
+          {#if responseNumber.divisors.length === 2}
+            {params.number} is a prime number
+          {:else}
+            All of this number's factors
+          {/if}
+        </div>
+      </div>
+    {/if}
+  </div>
 
-  <p>
-    <button on:click={handleCreateNumber}>Create {params.number}</button>
-  </p>
-{/if}
+  <div class="mt-5">
+    {#if !responseNumber}
+      <button class="btn btn-sm btn-success" on:click={handleCreateNumber}
+        >Calculate stats</button
+      >
+    {/if}
+    <button class="btn btn-sm btn-success" on:click={handleRandomiseNumber}
+      >Randomise</button
+    >
+  </div>
+</div>
