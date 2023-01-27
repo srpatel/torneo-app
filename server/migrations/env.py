@@ -1,4 +1,5 @@
 from config import settings
+import db
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
@@ -16,13 +17,7 @@ config = alembic.context.config
 def run_migrations() -> None:
     """Run migrations
     """
-    engine = create_engine(
-        settings.DATABASE_URI,
-        echo=settings.DEBUG,
-        connect_args={"check_same_thread": False},
-    )
-
-    with engine.connect() as connection:
+    with db.engine.connect() as connection:
         alembic.context.configure(
             connection=connection, target_metadata=SQLModel.metadata
         )
