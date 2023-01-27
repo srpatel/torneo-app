@@ -4,3 +4,4 @@ uvicorn[standard]
 gunicorn
 python-dotenv
 alembic
+mysql-connector-python
