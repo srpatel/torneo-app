@@ -1,9 +1,17 @@
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional
+from typing import List, Optional
+
+from sqlmodel import select
 
 from config import settings
 from db import get_session, Session, create_db_and_tables
+from models import (
+    TournamentRead,
+    TournamentCreate,
+    Tournament,
+    TournamentOptions,
+)
 
 app = FastAPI(root_path=settings.FASTAPI_ROOT_PATH)
 
@@ -27,8 +35,23 @@ def read_root():
     return {"Hello": "World"}
 
 
+@app.get("/tournaments", response_model=List[TournamentRead])
+def get_tournaments(session: Session = Depends(get_session)):
+    return session.exec(select(Tournament)).all()
 
 
+@app.post("/tournament", response_model=TournamentRead)
+def post_tournament(
+    tournament: TournamentCreate, session: Session = Depends(get_session)
+):
+    t = Tournament.from_orm(tournament)
+    session.add(t)
+    session.commit()
+    session.refresh(t)
+
+    return t
 
 
-
+@app.get("/tournament/{code}", response_model=TournamentRead)
+def get_tournament(code: str, session: Session = Depends(get_session)):
+    return session.exec(select(Tournament).where(Tournament.code == code)).one()
