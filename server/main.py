@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 
@@ -35,7 +35,7 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/tournaments", response_model=List[TournamentRead])
+@app.get("/tournament", response_model=List[TournamentRead])
 def get_tournaments(session: Session = Depends(get_session)):
     return session.exec(select(Tournament)).all()
 
@@ -45,6 +45,8 @@ def post_tournament(
     tournament: TournamentCreate, session: Session = Depends(get_session)
 ):
     t = Tournament.from_orm(tournament)
+    if not t.name:
+        raise HTTPException(status_code=400, detail="Tournament must have a name")
     session.add(t)
     session.commit()
     session.refresh(t)

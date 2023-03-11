@@ -9,5 +9,10 @@ export default defineConfig(({ command, mode }) => {
     envDir: "..",
     plugins: [svelte()],
     base: env.VITE_CLIENT_BASE_URL + "/",
+    resolve: {
+      alias: {
+        utils: path.resolve(__dirname, "./src/utils"),
+      },
+    },
   };
 });
