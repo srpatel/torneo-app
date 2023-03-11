@@ -1,10 +1,17 @@
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional
+from typing import List, Optional
+
+from sqlmodel import select
 
 from config import settings
 from db import get_session, Session, create_db_and_tables
-from models.numbers import Divisor, DivisorDB, Number, NumberCreate, NumberDB
+from models import (
+    TournamentRead,
+    TournamentCreate,
+    Tournament,
+    TournamentOptions,
+)
 
 app = FastAPI(root_path=settings.FASTAPI_ROOT_PATH)
 
@@ -28,25 +35,23 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/number/{number}", response_model=Optional[Number])
-def number_details(number: int, session: Session = Depends(get_session)):
-    return session.get(NumberDB, number)
+@app.get("/tournaments", response_model=List[TournamentRead])
+def get_tournaments(session: Session = Depends(get_session)):
+    return session.exec(select(Tournament)).all()
 
 
-@app.post("/number", response_model=Number)
-def post_number(number: NumberCreate, session: Session = Depends(get_session)):
-    input = number.dict(exclude_unset=True)
-    n = input["number"]
-    if not "divisors" in input:
-        input["divisors"] = [
-            DivisorDB(number=n, divisor=x) for x in range(1, n + 1) if n % x == 0
-        ]
-    if not "square" in input:
-        input["square"] = n * n
-
-    number_db = NumberDB(**input)
-
-    session.add(number_db)
+@app.post("/tournament", response_model=TournamentRead)
+def post_tournament(
+    tournament: TournamentCreate, session: Session = Depends(get_session)
+):
+    t = Tournament.from_orm(tournament)
+    session.add(t)
     session.commit()
+    session.refresh(t)
 
-    return number_db
+    return t
+
+
+@app.get("/tournament/{code}", response_model=TournamentRead)
+def get_tournament(code: str, session: Session = Depends(get_session)):
+    return session.exec(select(Tournament).where(Tournament.code == code)).one()
