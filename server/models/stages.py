@@ -18,9 +18,12 @@ class StageBase(StageShort):
     tournament_id: int = Field(nullable=False, foreign_key="tournaments.id")
 
 
-class StageRead(IntID, StageBase):
-    matches: List["MatchRead"]
+class StageWithTournament(IntID, StageBase):
     tournament: "TournamentShort"
+
+
+class StageRead(StageWithTournament):
+    matches: List["MatchRead"]
 
 
 class Stage(AutonumericId, StageBase, table=True):

@@ -7,8 +7,8 @@ from sqlalchemy.sql import func
 from models.commons import AutonumericId
 
 if TYPE_CHECKING:
-    from models.users import UserRead, User
-    from models.stages import Stage, StageShort
+    from models.users import UserRead, UserShort, User
+    from models.stages import Stage, StageWithTournament
 
 
 class MatchPlayerBase(SQLModel):
@@ -26,15 +26,23 @@ class MatchPlayer(AutonumericId, MatchPlayerBase, table=True):
     user: "User" = Relationship()
 
 
-class MatchPlayerRead(MatchPlayerBase):
-    user: "UserRead"
+class MatchPlayerShort(MatchPlayerBase):
+    user: "UserShort"
 
+
+class MatchPlayerRead(MatchPlayerShort):
+    id: int
+    
 
 class MatchBase(SQLModel):
     finished_at: Optional[datetime] = Field(default=None)
     
 class MatchShort(MatchBase):
-    pass
+    players: List[MatchPlayerShort]
+
+
+class MatchRead(MatchShort):
+    stage: "StageWithTournament"
 
 
 class Match(AutonumericId, MatchBase, table=True):
@@ -60,8 +68,3 @@ class Match(AutonumericId, MatchBase, table=True):
         for position, player in enumerate(players):
             self.players.append(MatchPlayer(user=player, position=position))
         return self
-
-
-class MatchRead(MatchBase):
-    stage: "StageShort"
-    players: List[MatchPlayerRead]
