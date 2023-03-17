@@ -8,3 +8,7 @@ __pycache__
 
 .python-version
 database.db
+
+.vscode
+
+pyrightconfig.json

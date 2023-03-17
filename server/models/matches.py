@@ -32,6 +32,9 @@ class MatchPlayerRead(MatchPlayerBase):
 
 class MatchBase(SQLModel):
     finished_at: Optional[datetime] = Field(default=None)
+    
+class MatchShort(MatchBase):
+    pass
 
 
 class Match(AutonumericId, MatchBase, table=True):
