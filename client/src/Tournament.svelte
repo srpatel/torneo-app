@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import { push } from "svelte-spa-router";
   import apiCall from "utils/api-call.js";
-  import apiCallDelete from "utils/api-call-delete.js";
 
   export let params;
 
@@ -24,7 +23,7 @@
   async function handleDelete() {
     deleting = true;
     try {
-      const { data, isSuccess } = await apiCallDelete("tournament/" + tournament.code);
+      const { data, isSuccess } = await apiCall("tournament/" + tournament.code, null, "DELETE");
       if (isSuccess) {
         push("/");
       } else {
