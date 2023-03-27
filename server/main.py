@@ -58,6 +58,7 @@ def post_tournament(
 def get_tournament(code: str, session: Session = Depends(get_session)):
     return session.exec(select(Tournament).where(Tournament.code == code)).one()
 
+
 @app.delete("/tournament/{code}", response_model=TournamentRead)
 def get_tournament(code: str, session: Session = Depends(get_session)):
     t = session.exec(select(Tournament).where(Tournament.code == code)).one()
