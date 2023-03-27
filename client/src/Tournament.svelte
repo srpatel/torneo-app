@@ -15,9 +15,21 @@
         }
     }
   });
+
+  let deleting = false;
+
+  async function handleDelete() {
+    deleting = true;
+    deleting = false;
+  }
 </script>
+
 
 <p>Code: {params?.code}</p>
 {#if tournament}
   <p>Name: {tournament.name}</p>
+  <Space h={2} />
+  <div class="form-control w-full max-w-xs">
+    <button class="btn" on:click={handleCreate} disabled={deleting}>Delete Tournament</button>
+  </div>
 {/if}
