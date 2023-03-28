@@ -1,6 +1,8 @@
-export default async function apiCall(endpoint, params = null) {
+export default async function apiCall(endpoint, params = null, method = null) {
   const headers = {};
-  const method = params ? "POST" : "GET";
+  if (!method){
+    method = params ? "POST" : "GET";
+  }
   let body = null;
   if (method == "POST") {
     headers["Content-Type"] = "application/json";
