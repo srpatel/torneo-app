@@ -37,10 +37,16 @@
 </script>
 
 
-<p>Code: {params?.code}</p>
 {#if tournament}
-  <p>Name: {tournament.name}</p>
-  <div class="form-control w-full max-w-xs">
-    <button class="btn" on:click={handleDelete} disabled={deleting}>Delete Tournament</button>
+
+<div class="card w-96 bg-base-100 shadow-xl">
+  <div class="card-body">
+    <h2 class="card-title">{tournament.name}</h2>
+    <p>Code: {tournament.code}</p>
+    <div class="card-actions justify-end">
+      <button class="btn" on:click={handleDelete} disabled={deleting}>Delete</button>
+    </div>
   </div>
+</div>
+
 {/if}
