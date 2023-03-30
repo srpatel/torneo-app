@@ -39,10 +39,12 @@
 
 {#if tournament}
 
-<div class="card w-96 bg-base-100 shadow-xl">
+<div class="card bg-base-100 shadow-xl">
   <div class="card-body">
     <h2 class="card-title">{tournament.name}</h2>
+    <p>Id: {tournament.id}</p>
     <p>Code: {tournament.code}</p>
+    <p>Created at: {tournament.created_at}</p>
     <div class="card-actions justify-end">
       <button class="btn" on:click={handleDelete} disabled={deleting}>Delete</button>
     </div>
