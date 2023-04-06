@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 
 class StageShort(SQLModel):
+    id: int
     stage: int
 
 
@@ -18,9 +19,16 @@ class StageBase(StageShort):
     tournament_id: int = Field(nullable=False, foreign_key="tournaments.id")
 
 
-class StageRead(IntID, StageBase):
-    matches: List["MatchRead"]
+class StageWithTournament(StageBase):
     tournament: "TournamentShort"
+
+
+class StageWithMatch(StageBase):
+    matches: List["MatchRead"]
+
+
+class StageRead(StageWithTournament, StageWithMatch):
+    pass
 
 
 class Stage(AutonumericId, StageBase, table=True):
