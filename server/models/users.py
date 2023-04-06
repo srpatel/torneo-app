@@ -22,7 +22,7 @@ class UserRead(UserShort):
     tournaments: List["TournamentShort"]
     matches: List["MatchShort"]
 
-    
+
 class UserWithCode(UserShort):
     code: str
 

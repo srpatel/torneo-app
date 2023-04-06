@@ -1,17 +1,13 @@
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List, Optional
+from typing import Annotated, List, Optional
 
 from sqlmodel import select
 
 from config import settings
 from db import get_session, Session, create_db_and_tables
-from models import (
-    TournamentRead,
-    TournamentCreate,
-    Tournament,
-    TournamentOptions,
-)
+from models import TournamentRead, TournamentCreate, Tournament, User
+from models.participants import Participant
 
 app = FastAPI(root_path=settings.FASTAPI_ROOT_PATH)
 
@@ -36,8 +32,25 @@ def read_root():
 
 
 @app.get("/tournament", response_model=List[TournamentRead])
-def get_tournaments(session: Session = Depends(get_session)):
-    return session.exec(select(Tournament)).all()
+def get_tournaments(
+    session: Session = Depends(get_session),
+    users: list[int] = Query(default=[]),
+    ongoing: Optional[bool] = None,
+):
+    query = select(Tournament)
+    for user_id in users:
+        query = query.where(Tournament.participants.any(User.id == user_id))
+
+    if ongoing:
+        query = query.where(Tournament.finished_at == None)
+    elif ongoing is not None:
+        query = query.where(Tournament.finished_at != None)
+
+    result = session.exec(query).all()
+    if len(result) > 0:
+        return result
+    else:
+        raise HTTPException(status_code=404, detail="Tournaments not found")
 
 
 @app.post("/tournament", response_model=TournamentRead)
@@ -56,11 +69,15 @@ def post_tournament(
 
 @app.get("/tournament/{code}", response_model=TournamentRead)
 def get_tournament(code: str, session: Session = Depends(get_session)):
-    return session.exec(select(Tournament).where(Tournament.code == code)).one()
+    result = session.exec(select(Tournament).where(Tournament.code == code)).one_or_none()
+    if result is None:
+        raise HTTPException(
+            status_code=404, detail=f"Tournament with code {code} not found"
+        )
 
 
 @app.delete("/tournament/{code}", response_model=TournamentRead)
-def get_tournament(code: str, session: Session = Depends(get_session)):
+def delete_tournament(code: str, session: Session = Depends(get_session)):
     t = session.exec(select(Tournament).where(Tournament.code == code)).one()
     session.delete(t)
     session.commit()
