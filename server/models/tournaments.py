@@ -7,8 +7,8 @@ from models.participants import Participant
 from models.stages import Stage
 
 if TYPE_CHECKING:
-    from models.stages import StageRead
-    from models.users import User, UserRead
+    from models.stages import StageWithMatch
+    from models.users import User, UserShort
 
 from models.utils import code_generator
 
@@ -35,15 +35,15 @@ class TournamentCreate(TournamentBase):
     options: TournamentOptions
 
 
-class TournamentShort(TournamentBase):
+class TournamentShort(TournamentCreate):
+    id: int
     code: str
     created_at: datetime
+    participants: List["UserShort"]
 
 
-class TournamentRead(TournamentCreate, TournamentShort):
-    id: int
-    stages: List["StageRead"]
-    participants: List["UserRead"]
+class TournamentRead(TournamentShort):
+    stages: List["StageWithMatch"]
 
 
 class Tournament(TournamentBase, table=True):
